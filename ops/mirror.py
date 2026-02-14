@@ -26,6 +26,7 @@ from bpy.types import (
     Operator,
     Mesh,
 )
+from .. import utils
 
 # ------------------------------------------------------------------------------- #
 # OPERATOR
@@ -37,6 +38,15 @@ class KT_OT_Mirror(Operator):
     bl_description = "KTools - Mirror"
     bl_options     = {'REGISTER', 'UNDO'}
 
+    axis_opts = (
+        ('+X' ,"+X", ""),
+        ('-X', "-X", ""),
+        ('+Y', "+Y", ""),
+        ('-Y', "-Y", ""),
+        ('+Z', "+Z", ""),
+        ('-Z', "-Z", ""),
+    )
+    axis: EnumProperty(name="Axis", items=axis_opts, default='+X') # type:ignore
 
     @classmethod
     def poll(cls, context:Context):
@@ -56,18 +66,32 @@ class KT_OT_Mirror(Operator):
         elif context.mode == 'OBJECT':
             if isinstance(context.active_object, bpy.types.Object):
                 if context.active_object.type == 'MESH':
-                    obj = context.active_operator
-
-        if not isinstance(obj, bpy.types.Object):
+                    obj = context.active_object
+        if not isinstance(obj, Object):
             return {'CANCELLED'}
 
+        # Slice
+        mesh = obj.data
+        bm = utils.bmu.open_bmesh(mesh)
+        utils.bmu.simple_bisect(bm, axis=self.axis)
+        utils.bmu.close_bmesh(bm, mesh)
 
+        # Modifier
+        mirror = obj.modifiers.new(name="Mirror", type='MIRROR')
+        if 'X' in self.axis:
+            mirror.use_axis = (True, False, False)
+        elif 'Y' in self.axis:
+            mirror.use_axis = (False, True, False)
+        elif 'Z' in self.axis:
+            mirror.use_axis = (False, False, True)
+        mirror.use_clip = True
+
+        context.area.tag_redraw()
         return {'FINISHED'}
-
-
 
 
     def draw(self, context:Context):
         layout = self.layout
+        layout.prop(self, 'axis')
 
 

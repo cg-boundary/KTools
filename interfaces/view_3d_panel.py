@@ -24,5 +24,4 @@ class KT_PT_View3dPanel(Panel):
 
     def draw(self, context):
         layout = self.layout
-
         layout.operator("kt.mirror")

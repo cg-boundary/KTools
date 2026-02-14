@@ -34,3 +34,5 @@ class KT_PT_View3dPanel(Panel):
         prop.boolean_type = 'UNION'
         prop = box.operator("kt.boolean", text="Intersect")
         prop.boolean_type = 'INTERSECT'
+        prop = box.operator("kt.boolean", text="Slice")
+        prop.boolean_type = 'SLICE'

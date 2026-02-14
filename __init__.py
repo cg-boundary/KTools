@@ -25,9 +25,11 @@ def register():
     ops.register()
     from . import interfaces
     interfaces.register()
+    register_hotkeys()
 
 
 def unregister():
+    unregister_hotkeys()
     from . import interfaces
     interfaces.unregister()
     from . import ops
@@ -36,3 +38,42 @@ def unregister():
     props.unregister()
     from . import utils
     utils.unregister()
+
+# ------------------------------------------------------------------------------- #
+# HOTKEYS
+# ------------------------------------------------------------------------------- #
+
+import bpy
+
+KEYS = []
+
+
+def register_hotkeys():
+
+    kc = bpy.context.window_manager.keyconfigs.addon
+    km = kc.keymaps.new(name="Object Mode", space_type='EMPTY')
+
+    kmi = km.keymap_items.new("kt.boolean", 'NUMPAD_MINUS', 'PRESS', ctrl=True, shift=False, alt=False)
+    kmi.properties.boolean_type = 'DIFFERENCE'
+    KEYS.append((km, kmi))
+
+    kmi = km.keymap_items.new("kt.boolean", 'NUMPAD_PLUS', 'PRESS', ctrl=True, shift=False, alt=False)
+    kmi.properties.boolean_type = 'UNION'
+    KEYS.append((km, kmi))
+
+    kmi = km.keymap_items.new("kt.boolean", 'NUMPAD_ASTERIX', 'PRESS', ctrl=True, shift=False, alt=False)
+    kmi.properties.boolean_type = 'INTERSECT'
+    KEYS.append((km, kmi))
+
+    kmi = km.keymap_items.new("kt.boolean", 'NUMPAD_SLASH', 'PRESS', ctrl=True, shift=False, alt=False)
+    kmi.properties.boolean_type = 'SLICE'
+    KEYS.append((km, kmi))
+
+
+def unregister_hotkeys():
+    for km, kmi in KEYS:
+        km.keymap_items.remove(kmi)
+    KEYS.clear()
+
+
+

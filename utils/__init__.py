@@ -4,6 +4,7 @@
 
 from . import addon
 from . import bmu
+from . import collection
 from . import object
 
 # ------------------------------------------------------------------------------- #

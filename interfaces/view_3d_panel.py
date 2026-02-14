@@ -25,3 +25,12 @@ class KT_PT_View3dPanel(Panel):
     def draw(self, context):
         layout = self.layout
         layout.operator("kt.mirror")
+
+        box = layout.box()
+        box.label(text="Booleans")
+        prop = box.operator("kt.boolean", text="Difference")
+        prop.boolean_type = 'DIFFERENCE'
+        prop = box.operator("kt.boolean", text="Union")
+        prop.boolean_type = 'UNION'
+        prop = box.operator("kt.boolean", text="Intersect")
+        prop.boolean_type = 'INTERSECT'

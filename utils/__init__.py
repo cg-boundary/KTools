@@ -4,6 +4,7 @@
 
 from . import addon
 from . import bmu
+from . import object
 
 # ------------------------------------------------------------------------------- #
 # REGISTER

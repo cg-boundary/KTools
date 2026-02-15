@@ -4,11 +4,15 @@
 
 import bpy
 from bpy.utils import register_class, unregister_class
-from .view_3d_panel import KT_PT_View3dPanel
+from .view_3d_panel import (
+    KT_PT_View3dPanelMesh,
+    KT_PT_View3dPanelProcedural,
+)
 
 
 CLASSES = (
-    KT_PT_View3dPanel,
+    KT_PT_View3dPanelMesh,
+    KT_PT_View3dPanelProcedural,
 )
 
 # ------------------------------------------------------------------------------- #

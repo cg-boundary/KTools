@@ -26,7 +26,7 @@ from bpy.types import (
     Operator,
     Mesh,
 )
-from .. import utils
+from ... import utils
 
 # ------------------------------------------------------------------------------- #
 # FUNCTIONS

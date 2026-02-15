@@ -5,7 +5,9 @@
 from . import addon
 from . import bmu
 from . import collection
+from . import graphics
 from . import object
+from . import ray
 
 # ------------------------------------------------------------------------------- #
 # REGISTER

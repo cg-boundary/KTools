@@ -69,15 +69,19 @@ class Voxel:
         voxels[self.neg_z].active = False
 
 
+    def random_neighbor(self):
+        choice = random.choice([self.pos_x, self.neg_x, self.pos_y, self.neg_y, self.pos_z, self.neg_z])
+        return choice
+
+
 class GEN:
     REGISTERED = False
     HANDLE_POST_VIEW = None
     HANDLE_POST_PIXEL = None
-    GRID = 35
+    GRID = 25
     VOXELS: list[Voxel] = []
     COORDS: list[Vector] = []
     POINTS_BATCH = None
-
 
     @classmethod
     def remove(cls):
@@ -129,7 +133,12 @@ class GEN:
             voxel.neg_z = cls.to_index(x, y, (z - 1) % g)
 
         # Seed
-        cls.VOXELS[random.randint(0, len(cls.VOXELS))].active = True
+        index = random.randint(0, len(cls.VOXELS))
+        voxel = cls.VOXELS[index]
+        voxel.active = True
+        cls.VOXELS[voxel.random_neighbor()].active = True
+        cls.VOXELS[voxel.random_neighbor()].active = True
+        cls.VOXELS[voxel.random_neighbor()].active = True
 
 
     @classmethod
@@ -156,21 +165,18 @@ class GEN:
 
         for voxel in cls.VOXELS:
             if voxel.active:
-                if voxels[voxel.pos_x].active and voxels[voxel.neg_x].active:
-                    voxels[voxel.pos_x].active = False
-                    voxels[voxel.neg_x].active = False
-                    voxels[voxel.pos_y].active = True
-                    voxels[voxel.neg_y].active = True
-                elif voxels[voxel.pos_y].active:
-                    voxels[voxel.pos_x].active = False
-                    voxels[voxel.neg_x].active = False
-                    voxels[voxel.pos_y].active = False
-                    voxels[voxel.pos_z].active = False
+                count = voxel.total_neighbors_active(voxels)
+                if count > 4:
+                    continue
+                elif count > 3:
+                    voxel.active = False
+                    voxel.deactivate_neighbors(voxels)
+                    break
+                elif count > 2:
+                    voxels[voxel.random_neighbor()].active = True
+                    voxels[voxel.random_neighbor()].active = True
                 else:
-                     voxels[voxel.pos_x].active = True
-                     voxels[voxel.pos_z].active = True
-                     voxel.active = False
-
+                    voxels[voxel.random_neighbor()].active = True
 
     @classmethod
     def draw_post_view(cls, context:Context):
